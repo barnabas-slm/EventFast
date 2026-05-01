@@ -14,10 +14,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function EventDateTimePicker() {
+type EventDateTimePickerProps = {
+  initialDateValue?: string | null;
+  initialTimeValue?: string | null;
+};
+
+function parseInitialDate(initialDateValue?: string | null) {
+  if (!initialDateValue) {
+    return undefined;
+  }
+
+  const parsedDate = new Date(`${initialDateValue}T00:00:00`);
+  return Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+}
+
+export function EventDateTimePicker({
+  initialDateValue,
+  initialTimeValue,
+}: EventDateTimePickerProps) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState<Date | undefined>(() => parseInitialDate(initialDateValue));
+  const [time, setTime] = useState(initialTimeValue ?? "");
 
   return (
     <div className="sm:col-span-2 grid gap-4 md:grid-cols-2 md:items-end">

@@ -1,7 +1,9 @@
 import { CalendarDays, Eye, EyeOff, MapPin } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 
@@ -137,6 +139,9 @@ export default async function DashboardPage() {
 												<><EyeOff className="h-3 w-3" /> Attendees hidden</>
 											)}
 										</Badge>
+										<Button asChild size="sm" variant="secondary">
+											<Link href={`/dashboard/${event.id}`}>Manage</Link>
+										</Button>
 										<CopyLinkButton eventId={event.id} />
 									</CardContent>
 								</Card>
