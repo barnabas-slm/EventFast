@@ -10,14 +10,18 @@ import { ConfirmAttendanceSection } from "./confirm-attendance-section";
 type EventRecord = {
 	id: string;
 	title: string;
-	description: string;
-	location: string;
-	event_date: string;
-	event_time: string;
+	description: string | null;
+	location: string | null;
+	event_date: string | null;
+	event_time: string | null;
 	show_attendees: boolean;
 };
 
-function formatEventDate(dateValue: string) {
+function formatEventDate(dateValue: string | null) {
+	if (!dateValue) {
+		return null;
+	}
+
 	const parsedDate = new Date(`${dateValue}T00:00:00`);
 
 	if (Number.isNaN(parsedDate.getTime())) {
@@ -32,7 +36,11 @@ function formatEventDate(dateValue: string) {
 	}).format(parsedDate);
 }
 
-function formatEventTime(timeValue: string) {
+function formatEventTime(timeValue: string | null) {
+	if (!timeValue) {
+		return null;
+	}
+
 	const [hoursText, minutesText] = timeValue.split(":");
 	const hours = Number.parseInt(hoursText ?? "", 10);
 	const minutes = Number.parseInt(minutesText ?? "", 10);
@@ -76,6 +84,8 @@ export default async function EventPage({ params }: EventPageProps) {
 	}
 
 	const eventData = event as EventRecord;
+	const formattedDate = formatEventDate(eventData.event_date);
+	const formattedTime = formatEventTime(eventData.event_time);
 	let attendees: AttendeeRecord[] = [];
 
 	if (eventData.show_attendees) {
@@ -101,17 +111,25 @@ export default async function EventPage({ params }: EventPageProps) {
 							Event
 						</p>
 						<CardTitle className="text-4xl sm:text-5xl">{eventData.title}</CardTitle>
-						<p className="text-lg leading-8 text-muted-foreground">{eventData.description}</p>
+						{eventData.description && (
+							<p className="text-lg leading-8 text-muted-foreground">{eventData.description}</p>
+						)}
 					</CardHeader>
 					<CardContent className="grid gap-2 text-sm text-muted-foreground">
-						<p className="inline-flex items-center gap-2">
-							<MapPin className="h-4 w-4" />
-							{eventData.location}
-						</p>
-						<p className="inline-flex items-center gap-2">
-							<CalendarDays className="h-4 w-4" />
-							{formatEventDate(eventData.event_date)} at {formatEventTime(eventData.event_time)}
-						</p>
+						{eventData.location && (
+							<p className="inline-flex items-center gap-2">
+								<MapPin className="h-4 w-4" />
+								{eventData.location}
+							</p>
+						)}
+						{(formattedDate || formattedTime) && (
+							<p className="inline-flex items-center gap-2">
+								<CalendarDays className="h-4 w-4" />
+								{formattedDate && formattedTime
+									? `${formattedDate} at ${formattedTime}`
+									: formattedDate ?? formattedTime}
+							</p>
+						)}
 					</CardContent>
 				</Card>
 

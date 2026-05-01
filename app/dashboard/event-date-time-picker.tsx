@@ -17,7 +17,7 @@ import {
 export function EventDateTimePicker() {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState("10:30:00");
+  const [time, setTime] = useState("");
 
   return (
     <div className="sm:col-span-2 grid gap-4 md:grid-cols-2 md:items-end">

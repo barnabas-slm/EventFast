@@ -16,14 +16,18 @@ import { EventDateTimePicker } from "./event-date-time-picker";
 type EventItem = {
 	id: string;
 	title: string;
-	description: string;
-	location: string;
-	event_date: string;
-	event_time: string;
+	description: string | null;
+	location: string | null;
+	event_date: string | null;
+	event_time: string | null;
 	show_attendees: boolean;
 };
 
-function formatEventDate(dateValue: string) {
+function formatEventDate(dateValue: string | null) {
+	if (!dateValue) {
+		return null;
+	}
+
 	const parsedDate = new Date(`${dateValue}T00:00:00`);
 
 	if (Number.isNaN(parsedDate.getTime())) {
@@ -37,7 +41,11 @@ function formatEventDate(dateValue: string) {
 	}).format(parsedDate);
 }
 
-function formatEventTime(timeValue: string) {
+function formatEventTime(timeValue: string | null) {
+	if (!timeValue) {
+		return null;
+	}
+
 	const [hoursText, minutesText] = timeValue.split(":");
 	const hours = Number.parseInt(hoursText ?? "", 10);
 	const minutes = Number.parseInt(minutesText ?? "", 10);
@@ -109,15 +117,14 @@ export default async function DashboardPage() {
 								<Textarea
 									id="description"
 									name="description"
-									required
 									rows={4}
-									placeholder="What is this event about?"
+									placeholder="What is this event about? (optional)"
 								/>
 							</div>
 
 							<div className="flex flex-col gap-2 sm:col-span-2">
 								<Label htmlFor="location">Location</Label>
-								<Input id="location" name="location" required placeholder="Central Park" />
+								<Input id="location" name="location" placeholder="Central Park (optional)" />
 							</div>
 
 
@@ -145,38 +152,47 @@ export default async function DashboardPage() {
 							You have no events yet. Create one above to get started.
 						</div>
 					) : (
-						events.map((event) => (
-							<Card key={event.id}>
-								<CardHeader>
-									<div>
-										<CardTitle className="text-lg">{event.title}</CardTitle>
-										<p className="mt-1 text-sm text-muted-foreground">{event.description}</p>
+						events.map((event) => {
+							const formattedDate = formatEventDate(event.event_date);
+							const formattedTime = formatEventTime(event.event_time);
+
+							return (
+								<Card key={event.id}>
+									<CardHeader>
 										<div>
-											<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-												<MapPin className="h-4 w-4" />
-												{event.location}
-											</p>
+											<CardTitle className="text-lg">{event.title}</CardTitle>
+											{event.description && (
+												<p className="mt-1 text-sm text-muted-foreground">{event.description}</p>
+											)}
+											{event.location && (
+												<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+													<MapPin className="h-4 w-4" />
+													{event.location}
+												</p>
+											)}
+											{(formattedDate || formattedTime) && (
+												<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+													<CalendarDays className="h-4 w-4" />
+													{formattedDate && formattedTime
+														? `${formattedDate} at ${formattedTime}`
+														: formattedDate ?? formattedTime}
+												</p>
+											)}
 										</div>
-										<div>
-											<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-												<CalendarDays className="h-4 w-4" />
-												{formatEventDate(event.event_date)} at {formatEventTime(event.event_time)}
-											</p>
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent className="flex flex-col gap-3">
-									<Badge variant={event.show_attendees ? "secondary" : "outline"} className="w-fit gap-1">
-										{event.show_attendees ? (
-											<><Eye className="h-3 w-3" /> Attendees visible</>
-										) : (
-											<><EyeOff className="h-3 w-3" /> Attendees hidden</>
-										)}
-									</Badge>
-									<CopyLinkButton eventId={event.id} />
-								</CardContent>
-							</Card>
-						))
+									</CardHeader>
+									<CardContent className="flex flex-col gap-3">
+										<Badge variant={event.show_attendees ? "secondary" : "outline"} className="w-fit gap-1">
+											{event.show_attendees ? (
+												<><Eye className="h-3 w-3" /> Attendees visible</>
+											) : (
+												<><EyeOff className="h-3 w-3" /> Attendees hidden</>
+											)}
+										</Badge>
+										<CopyLinkButton eventId={event.id} />
+									</CardContent>
+								</Card>
+							);
+						})
 					)}
 				</section>
 			</div>

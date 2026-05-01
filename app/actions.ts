@@ -13,6 +13,15 @@ function readRequiredString(value: FormDataEntryValue | null, fieldName: string)
   return value.trim();
 }
 
+function readOptionalString(value: FormDataEntryValue | null) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 function readBoolean(value: FormDataEntryValue | null) {
   if (typeof value !== "string") {
     return false;
@@ -57,13 +66,10 @@ export async function createEvent(formData: FormData) {
   }
 
   const title = readRequiredString(formData.get("title"), "title");
-  const description = readRequiredString(
-    formData.get("description"),
-    "description",
-  );
-  const location = readRequiredString(formData.get("location"), "location");
-  const eventDate = readRequiredString(formData.get("event_date"), "event_date");
-  const eventTime = readRequiredString(formData.get("event_time"), "event_time");
+  const description = readOptionalString(formData.get("description"));
+  const location = readOptionalString(formData.get("location"));
+  const eventDate = readOptionalString(formData.get("event_date"));
+  const eventTime = readOptionalString(formData.get("event_time"));
   const showAttendees = readBoolean(formData.get("show_attendees"));
 
   const { error } = await supabase.from("events").insert({
