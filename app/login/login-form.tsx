@@ -3,6 +3,10 @@
 import { useState, useTransition } from "react";
 
 import { signIn } from "@/app/actions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -29,31 +33,33 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-      <label className="block">
-        <span className="mb-2 block text-sm font-medium text-zinc-700">Email</span>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
           placeholder="you@example.com"
         />
-      </label>
+      </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="w-full rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60"
-      >
+      <Button type="submit" disabled={isPending} className="w-full">
         {isPending ? "Sending link..." : "Send magic link"}
-      </button>
+      </Button>
 
       {successMessage && (
-        <p className="text-sm font-medium text-emerald-700">{successMessage}</p>
+        <Alert>
+          <AlertDescription className="text-emerald-700">{successMessage}</AlertDescription>
+        </Alert>
       )}
 
-      {errorMessage && <p className="text-sm font-medium text-red-600">{errorMessage}</p>}
+      {errorMessage && (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
     </form>
   );
 }

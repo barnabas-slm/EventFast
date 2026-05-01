@@ -3,6 +3,8 @@
 import { Link2 } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 type CopyLinkButtonProps = {
   eventId: string;
 };
@@ -23,17 +25,13 @@ export function CopyLinkButton({ eventId }: CopyLinkButtonProps) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50"
-    >
+    <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
       <Link2 className="h-4 w-4" />
       {status === "copied"
         ? "Copied"
         : status === "failed"
           ? "Copy failed"
           : "Copy Link"}
-    </button>
+    </Button>
   );
 }

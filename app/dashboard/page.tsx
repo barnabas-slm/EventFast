@@ -2,6 +2,12 @@ import { CalendarDays, Eye, EyeOff, MapPin, PlusCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { createEvent } from "@/app/actions";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/server";
 
 import { CopyLinkButton } from "./copy-link-button";
@@ -73,91 +79,71 @@ export default async function DashboardPage() {
 	return (
 		<main className="min-h-screen bg-zinc-50 px-4 py-10 text-zinc-900 sm:px-8">
 			<div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-				<header className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-					<p className="text-sm font-medium text-zinc-500">Dashboard</p>
-					<h1 className="mt-2 text-3xl font-semibold tracking-tight">Your Events</h1>
-					<p className="mt-2 text-sm text-zinc-600">
-						Create and manage events, then share public links instantly.
-					</p>
-				</header>
+				<Card>
+					<CardHeader>
+						<p className="text-sm font-medium text-muted-foreground">Dashboard</p>
+						<CardTitle className="text-3xl">Your Events</CardTitle>
+						<p className="text-sm text-muted-foreground">
+							Create and manage events, then share public links instantly.
+						</p>
+					</CardHeader>
+				</Card>
 
-				<section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-					<div className="mb-5 flex items-center gap-2 text-lg font-semibold">
-						<PlusCircle className="h-5 w-5" />
-						Create New Event
-					</div>
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2 text-lg">
+							<PlusCircle className="h-5 w-5" />
+							Create New Event
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<form action={createEvent} className="grid gap-4 sm:grid-cols-2">
+							<div className="flex flex-col gap-2 sm:col-span-2">
+								<Label htmlFor="title">Title</Label>
+								<Input id="title" name="title" required placeholder="Team Offsite" />
+							</div>
 
-					<form action={createEvent} className="grid gap-4 sm:grid-cols-2">
-						<label className="flex flex-col gap-2 sm:col-span-2">
-							<span className="text-sm font-medium text-zinc-700">Title</span>
-							<input
-								name="title"
-								required
-								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
-								placeholder="Team Offsite"
-							/>
-						</label>
+							<div className="flex flex-col gap-2 sm:col-span-2">
+								<Label htmlFor="description">Description</Label>
+								<Textarea
+									id="description"
+									name="description"
+									required
+									rows={4}
+									placeholder="What is this event about?"
+								/>
+							</div>
 
-						<label className="flex flex-col gap-2 sm:col-span-2">
-							<span className="text-sm font-medium text-zinc-700">Description</span>
-							<textarea
-								name="description"
-								required
-								rows={4}
-								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
-								placeholder="What is this event about?"
-							/>
-						</label>
+							<div className="flex flex-col gap-2">
+								<Label htmlFor="location">Location</Label>
+								<Input id="location" name="location" required placeholder="Central Park" />
+							</div>
 
-						<label className="flex flex-col gap-2">
-							<span className="text-sm font-medium text-zinc-700">Location</span>
-							<input
-								name="location"
-								required
-								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
-								placeholder="Central Park"
-							/>
-						</label>
+							<div className="flex flex-col gap-2">
+								<Label htmlFor="event_date">Date</Label>
+								<Input id="event_date" type="date" name="event_date" required />
+							</div>
 
-						<label className="flex flex-col gap-2">
-							<span className="text-sm font-medium text-zinc-700">Date</span>
-							<input
-								type="date"
-								name="event_date"
-								required
-								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
-							/>
-						</label>
+							<div className="flex flex-col gap-2">
+								<Label htmlFor="event_time">Time</Label>
+								<Input id="event_time" type="time" name="event_time" required />
+							</div>
 
-						<label className="flex flex-col gap-2">
-							<span className="text-sm font-medium text-zinc-700">Time</span>
-							<input
-								type="time"
-								name="event_time"
-								required
-								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
-							/>
-						</label>
+							<label className="inline-flex items-center gap-2 text-sm font-medium">
+								<input
+									type="checkbox"
+									name="show_attendees"
+									className="h-4 w-4 rounded border-zinc-300"
+								/>
+								Show attendees publicly
+							</label>
 
-						<label className="inline-flex items-center gap-2 text-sm font-medium text-zinc-700">
-							<input
-								type="checkbox"
-								name="show_attendees"
-								className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
-							/>
-							Show attendees publicly
-						</label>
-
-						<div className="sm:col-span-2">
-							<button
-								type="submit"
-								className="inline-flex items-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700"
-							>
-								Create Event
-							</button>
-						</div>
-					</form>
-				</section>
+							<div className="sm:col-span-2">
+								<Button type="submit">Create Event</Button>
+							</div>
+						</form>
+					</CardContent>
+				</Card>
 
 				<section className="grid gap-4 sm:grid-cols-2">
 					{events.length === 0 ? (
@@ -166,41 +152,32 @@ export default async function DashboardPage() {
 						</div>
 					) : (
 						events.map((event) => (
-							<article
-								key={event.id}
-								className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"
-							>
-								<div className="mb-3 flex items-start justify-between gap-3">
+							<Card key={event.id}>
+								<CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
 									<div>
-										<h2 className="text-lg font-semibold tracking-tight">{event.title}</h2>
-										<p className="mt-1 text-sm text-zinc-600">{event.description}</p>
-										<p className="mt-2 inline-flex items-center gap-1 text-sm text-zinc-600">
+										<CardTitle className="text-lg">{event.title}</CardTitle>
+										<p className="mt-1 text-sm text-muted-foreground">{event.description}</p>
+										<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
 											<MapPin className="h-4 w-4" />
 											{event.location}
 										</p>
-										<p className="mt-1 text-sm text-zinc-600">
+										<p className="mt-1 text-sm text-muted-foreground">
 											{formatEventDate(event.event_date)} at {formatEventTime(event.event_time)}
 										</p>
 									</div>
-									<CalendarDays className="mt-1 h-5 w-5 shrink-0 text-zinc-400" />
-								</div>
-
-								<div className="mb-4 flex items-center gap-2 text-sm text-zinc-600">
-									{event.show_attendees ? (
-										<>
-											<Eye className="h-4 w-4" />
-											Attendees visible
-										</>
-									) : (
-										<>
-											<EyeOff className="h-4 w-4" />
-											Attendees hidden
-										</>
-									)}
-								</div>
-
-								<CopyLinkButton eventId={event.id} />
-							</article>
+									<CalendarDays className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
+								</CardHeader>
+								<CardContent className="flex flex-col gap-3">
+									<Badge variant={event.show_attendees ? "secondary" : "outline"} className="w-fit gap-1">
+										{event.show_attendees ? (
+											<><Eye className="h-3 w-3" /> Attendees visible</>
+										) : (
+											<><EyeOff className="h-3 w-3" /> Attendees hidden</>
+										)}
+									</Badge>
+									<CopyLinkButton eventId={event.id} />
+								</CardContent>
+							</Card>
 						))
 					)}
 				</section>
