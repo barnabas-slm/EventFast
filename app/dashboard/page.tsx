@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/server";
 
 import { CopyLinkButton } from "./copy-link-button";
+import { EventDateTimePicker } from "./event-date-time-picker";
 
 type EventItem = {
 	id: string;
@@ -114,20 +115,13 @@ export default async function DashboardPage() {
 								/>
 							</div>
 
-							<div className="flex flex-col gap-2">
+							<div className="flex flex-col gap-2 sm:col-span-2">
 								<Label htmlFor="location">Location</Label>
 								<Input id="location" name="location" required placeholder="Central Park" />
 							</div>
 
-							<div className="flex flex-col gap-2">
-								<Label htmlFor="event_date">Date</Label>
-								<Input id="event_date" type="date" name="event_date" required />
-							</div>
 
-							<div className="flex flex-col gap-2">
-								<Label htmlFor="event_time">Time</Label>
-								<Input id="event_time" type="time" name="event_time" required />
-							</div>
+							<EventDateTimePicker />
 
 							<label className="inline-flex items-center gap-2 text-sm font-medium">
 								<input
@@ -153,19 +147,23 @@ export default async function DashboardPage() {
 					) : (
 						events.map((event) => (
 							<Card key={event.id}>
-								<CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+								<CardHeader>
 									<div>
 										<CardTitle className="text-lg">{event.title}</CardTitle>
 										<p className="mt-1 text-sm text-muted-foreground">{event.description}</p>
-										<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-											<MapPin className="h-4 w-4" />
-											{event.location}
-										</p>
-										<p className="mt-1 text-sm text-muted-foreground">
-											{formatEventDate(event.event_date)} at {formatEventTime(event.event_time)}
-										</p>
+										<div>
+											<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+												<MapPin className="h-4 w-4" />
+												{event.location}
+											</p>
+										</div>
+										<div>
+											<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+												<CalendarDays className="h-4 w-4" />
+												{formatEventDate(event.event_date)} at {formatEventTime(event.event_time)}
+											</p>
+										</div>
 									</div>
-									<CalendarDays className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
 								</CardHeader>
 								<CardContent className="flex flex-col gap-3">
 									<Badge variant={event.show_attendees ? "secondary" : "outline"} className="w-fit gap-1">
