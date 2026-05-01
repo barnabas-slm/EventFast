@@ -157,7 +157,7 @@ export default async function DashboardPage() {
 							const formattedTime = formatEventTime(event.event_time);
 
 							return (
-								<Card key={event.id}>
+								<Card key={event.id} className="flex flex-col">
 									<CardHeader>
 										<div>
 											<CardTitle className="text-lg">{event.title}</CardTitle>
@@ -165,14 +165,14 @@ export default async function DashboardPage() {
 												<p className="mt-1 text-sm text-muted-foreground">{event.description}</p>
 											)}
 											{event.location && (
-												<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-													<MapPin className="h-4 w-4" />
+												<p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
+													<MapPin className="h-4 w-4 shrink-0" />
 													{event.location}
 												</p>
 											)}
 											{(formattedDate || formattedTime) && (
-												<p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-													<CalendarDays className="h-4 w-4" />
+												<p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
+													<CalendarDays className="h-4 w-4 shrink-0" />
 													{formattedDate && formattedTime
 														? `${formattedDate} at ${formattedTime}`
 														: formattedDate ?? formattedTime}
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
 											)}
 										</div>
 									</CardHeader>
-									<CardContent className="flex flex-col gap-3">
+									<CardContent className="mt-auto flex flex-col gap-3">
 										<Badge variant={event.show_attendees ? "secondary" : "outline"} className="w-fit gap-1">
 											{event.show_attendees ? (
 												<><Eye className="h-3 w-3" /> Attendees visible</>
