@@ -61,11 +61,17 @@ export async function createEvent(formData: FormData) {
     formData.get("description"),
     "description",
   );
+  const location = readRequiredString(formData.get("location"), "location");
+  const eventDate = readRequiredString(formData.get("event_date"), "event_date");
+  const eventTime = readRequiredString(formData.get("event_time"), "event_time");
   const showAttendees = readBoolean(formData.get("show_attendees"));
 
   const { error } = await supabase.from("events").insert({
     title,
     description,
+    location,
+    event_date: eventDate,
+    event_time: eventTime,
     show_attendees: showAttendees,
     creator_id: user.id,
   });

@@ -1,4 +1,4 @@
-import { ListChecks, Users } from "lucide-react";
+import { CalendarDays, ListChecks, MapPin, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
@@ -9,8 +9,44 @@ type EventRecord = {
 	id: string;
 	title: string;
 	description: string;
+	location: string;
+	event_date: string;
+	event_time: string;
 	show_attendees: boolean;
 };
+
+function formatEventDate(dateValue: string) {
+	const parsedDate = new Date(`${dateValue}T00:00:00`);
+
+	if (Number.isNaN(parsedDate.getTime())) {
+		return dateValue;
+	}
+
+	return new Intl.DateTimeFormat("en-US", {
+		weekday: "short",
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+	}).format(parsedDate);
+}
+
+function formatEventTime(timeValue: string) {
+	const [hoursText, minutesText] = timeValue.split(":");
+	const hours = Number.parseInt(hoursText ?? "", 10);
+	const minutes = Number.parseInt(minutesText ?? "", 10);
+
+	if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+		return timeValue;
+	}
+
+	const parsedDate = new Date();
+	parsedDate.setHours(hours, minutes, 0, 0);
+
+	return new Intl.DateTimeFormat("en-US", {
+		hour: "numeric",
+		minute: "2-digit",
+	}).format(parsedDate);
+}
 
 type AttendeeRecord = {
 	id: string;
@@ -29,7 +65,7 @@ export default async function EventPage({ params }: EventPageProps) {
 	
 	const { data: event, error: eventError } = await supabase
 		.from("events")
-		.select("id, title, description, show_attendees")
+		.select("id, title, description, location, event_date, event_time, show_attendees")
 		.eq("id", id)
 		.single();
 
@@ -67,6 +103,16 @@ export default async function EventPage({ params }: EventPageProps) {
 					<p className="mt-4 text-lg leading-8 text-zinc-700">
 						{eventData.description}
 					</p>
+					<div className="mt-6 grid gap-2 text-sm text-zinc-700">
+						<p className="inline-flex items-center gap-2">
+							<MapPin className="h-4 w-4 text-zinc-500" />
+							{eventData.location}
+						</p>
+						<p className="inline-flex items-center gap-2">
+							<CalendarDays className="h-4 w-4 text-zinc-500" />
+							{formatEventDate(eventData.event_date)} at {formatEventTime(eventData.event_time)}
+						</p>
+					</div>
 				</header>
 
 				<ConfirmAttendanceSection eventId={eventData.id} />

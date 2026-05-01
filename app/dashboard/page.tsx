@@ -1,4 +1,4 @@
-import { CalendarDays, Eye, EyeOff, PlusCircle } from "lucide-react";
+import { CalendarDays, Eye, EyeOff, MapPin, PlusCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { createEvent } from "@/app/actions";
@@ -10,8 +10,43 @@ type EventItem = {
 	id: string;
 	title: string;
 	description: string;
+	location: string;
+	event_date: string;
+	event_time: string;
 	show_attendees: boolean;
 };
+
+function formatEventDate(dateValue: string) {
+	const parsedDate = new Date(`${dateValue}T00:00:00`);
+
+	if (Number.isNaN(parsedDate.getTime())) {
+		return dateValue;
+	}
+
+	return new Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+	}).format(parsedDate);
+}
+
+function formatEventTime(timeValue: string) {
+	const [hoursText, minutesText] = timeValue.split(":");
+	const hours = Number.parseInt(hoursText ?? "", 10);
+	const minutes = Number.parseInt(minutesText ?? "", 10);
+
+	if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+		return timeValue;
+	}
+
+	const parsedDate = new Date();
+	parsedDate.setHours(hours, minutes, 0, 0);
+
+	return new Intl.DateTimeFormat("en-US", {
+		hour: "numeric",
+		minute: "2-digit",
+	}).format(parsedDate);
+}
 
 export default async function DashboardPage() {
 	const supabase = await createClient();
@@ -26,7 +61,7 @@ export default async function DashboardPage() {
 
 	const { data, error } = await supabase
 		.from("events")
-		.select("id, title, description, show_attendees")
+		.select("id, title, description, location, event_date, event_time, show_attendees")
 		.eq("creator_id", user.id);
 
 	if (error) {
@@ -74,6 +109,36 @@ export default async function DashboardPage() {
 							/>
 						</label>
 
+						<label className="flex flex-col gap-2">
+							<span className="text-sm font-medium text-zinc-700">Location</span>
+							<input
+								name="location"
+								required
+								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
+								placeholder="Central Park"
+							/>
+						</label>
+
+						<label className="flex flex-col gap-2">
+							<span className="text-sm font-medium text-zinc-700">Date</span>
+							<input
+								type="date"
+								name="event_date"
+								required
+								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
+							/>
+						</label>
+
+						<label className="flex flex-col gap-2">
+							<span className="text-sm font-medium text-zinc-700">Time</span>
+							<input
+								type="time"
+								name="event_time"
+								required
+								className="rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-emerald-200 transition focus:ring"
+							/>
+						</label>
+
 						<label className="inline-flex items-center gap-2 text-sm font-medium text-zinc-700">
 							<input
 								type="checkbox"
@@ -109,6 +174,13 @@ export default async function DashboardPage() {
 									<div>
 										<h2 className="text-lg font-semibold tracking-tight">{event.title}</h2>
 										<p className="mt-1 text-sm text-zinc-600">{event.description}</p>
+										<p className="mt-2 inline-flex items-center gap-1 text-sm text-zinc-600">
+											<MapPin className="h-4 w-4" />
+											{event.location}
+										</p>
+										<p className="mt-1 text-sm text-zinc-600">
+											{formatEventDate(event.event_date)} at {formatEventTime(event.event_time)}
+										</p>
 									</div>
 									<CalendarDays className="mt-1 h-5 w-5 shrink-0 text-zinc-400" />
 								</div>
