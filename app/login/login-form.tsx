@@ -46,7 +46,7 @@ export function LoginForm() {
       </div>
 
       <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? "Sending link..." : "Send magic link"}
+        {isPending ? "Sending link..." : "Send login link"}
       </Button>
 
       {successMessage && (

@@ -9,7 +9,7 @@ export default function LoginPage() {
 				<CardHeader>
 					<CardTitle className="text-2xl">Log in</CardTitle>
 					<CardDescription>
-						Enter your email and we will send you a magic login link.
+						Enter your email and we will send you a login link.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
