@@ -27,14 +27,13 @@ export default async function DashboardPage() {
 	const { data, error } = await supabase
 		.from("events")
 		.select("id, title, description, show_attendees")
-		.eq("user_id", user.id);
+		.eq("creator_id", user.id);
 
 	if (error) {
 		throw new Error(error.message);
 	}
 
 	const events: EventItem[] = (data ?? []) as EventItem[];
-	// const events: EventItem[] = [];
 
 	return (
 		<main className="min-h-screen bg-zinc-50 px-4 py-10 text-zinc-900 sm:px-8">

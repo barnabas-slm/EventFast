@@ -67,7 +67,7 @@ export async function createEvent(formData: FormData) {
     title,
     description,
     show_attendees: showAttendees,
-    user_id: user.id,
+    creator_id: user.id,
   });
 
   if (error) {
