@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarDays, MapPin, Users } from "lucide-react";
+import { ArrowLeft, CalendarDays, MapPin } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
@@ -160,29 +160,7 @@ export default async function DashboardEventPage({ params }: DashboardEventPageP
 
         <ManageAttendeesSection eventId={eventData.id} attendees={attendees} />
 
-        <DeleteEventSection eventId={eventData.id} eventTitle={eventData.title} />
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Users className="h-5 w-5" />
-              Current Attendees
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {attendees.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No attendees yet.</p>
-            ) : (
-              <ul className="space-y-2">
-                {attendees.map((attendee) => (
-                  <li key={attendee.id} className="rounded-2xl border border-zinc-200 bg-white px-4 py-3">
-                    {attendee.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+        <DeleteEventSection eventId={eventData.id} />
       </div>
     </main>
   );

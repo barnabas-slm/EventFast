@@ -206,24 +206,15 @@ export async function removeAttendeeFromEvent(eventId: string, attendeeId: strin
   revalidatePath(`/e/${normalizedEventId}`);
 }
 
-export async function deleteEvent(eventId: string, confirmationTitle: string) {
+export async function deleteEvent(eventId: string) {
   const normalizedEventId = eventId.trim();
-  const normalizedConfirmationTitle = confirmationTitle.trim();
 
   if (!normalizedEventId) {
     throw new Error("Event ID is required.");
   }
 
-  if (!normalizedConfirmationTitle) {
-    throw new Error("Please type the event title to confirm deletion.");
-  }
-
   const { supabase, user } = await getAuthenticatedUser();
-  const event = await assertEventOwnership(normalizedEventId, user.id);
-
-  if (event.title !== normalizedConfirmationTitle) {
-    throw new Error("Confirmation title does not match this event.");
-  }
+  await assertEventOwnership(normalizedEventId, user.id);
 
   const { error: deleteAttendeesError } = await supabase
     .from("attendees")

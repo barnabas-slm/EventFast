@@ -8,26 +8,23 @@ import { deleteEvent } from "@/app/actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 type DeleteEventSectionProps = {
   eventId: string;
-  eventTitle: string;
 };
 
-export function DeleteEventSection({ eventId, eventTitle }: DeleteEventSectionProps) {
+export function DeleteEventSection({ eventId }: DeleteEventSectionProps) {
   const router = useRouter();
-  const [confirmationTitle, setConfirmationTitle] = useState("");
+  const [isConfirming, setIsConfirming] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const handleDelete = () => {
+  const handleConfirmDelete = () => {
     setErrorMessage("");
 
     startTransition(async () => {
       try {
-        await deleteEvent(eventId, confirmationTitle);
+        await deleteEvent(eventId);
         router.push("/dashboard");
         router.refresh();
       } catch (error) {
@@ -44,26 +41,46 @@ export function DeleteEventSection({ eventId, eventTitle }: DeleteEventSectionPr
           Danger Zone
         </CardTitle>
         <CardDescription>
-          This permanently deletes the event and all attendees. Type the event title to confirm.
+          This permanently deletes the event and all attendees.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="delete-confirmation-title">Type: {eventTitle}</Label>
-          <Input
-            id="delete-confirmation-title"
-            value={confirmationTitle}
-            onChange={(event) => setConfirmationTitle(event.target.value)}
-            placeholder="Enter event title"
-          />
-        </div>
-
-        <div>
-          <Button type="button" variant="destructive" onClick={handleDelete} disabled={isPending}>
-            <Trash2 className="h-4 w-4" />
-            {isPending ? "Deleting..." : "Delete event"}
-          </Button>
-        </div>
+        {!isConfirming ? (
+          <div>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                setIsConfirming(true);
+                setErrorMessage("");
+              }}
+              disabled={isPending}
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete event
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button type="button" variant="destructive" onClick={handleConfirmDelete} disabled={isPending}>
+              <Trash2 className="h-4 w-4" />
+              {isPending ? "Deleting..." : "Confirm delete"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (!isPending) {
+                  setIsConfirming(false);
+                  setErrorMessage("");
+                }
+              }}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
 
         {errorMessage && (
           <Alert variant="destructive">
