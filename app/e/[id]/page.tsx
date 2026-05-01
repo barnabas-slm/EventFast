@@ -1,4 +1,5 @@
 import { CalendarDays, Check, MapPin, Users } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Item } from "@/components/ui/item";
@@ -163,6 +164,15 @@ export default async function EventPage({ params }: EventPageProps) {
 						</CardContent>
 					</Card>
 				)}
+
+				<div className="pt-2 text-center">
+					<Link
+						href="/dashboard"
+						className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+					>
+						Create an event
+					</Link>
+				</div>
 			</div>
 		</main>
 	);
