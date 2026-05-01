@@ -1,7 +1,7 @@
-import { CalendarDays, ListChecks, MapPin, Users } from "lucide-react";
+import { CalendarDays, Check, MapPin, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 
-import { Badge } from "@/components/ui/badge";
+import { Item } from "@/components/ui/item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 
@@ -152,10 +152,10 @@ export default async function EventPage({ params }: EventPageProps) {
 								<ul className="space-y-2">
 									{attendees.map((attendee) => (
 										<li key={attendee.id}>
-											<Badge variant="outline" className="w-full justify-start gap-2 px-3 py-2 text-sm font-normal">
-												<ListChecks className="h-4 w-4 text-emerald-600" />
+											<Item variant="outline">
+												<Check className="h-4 w-4 text-emerald-600" />
 												{attendee.name}
-											</Badge>
+											</Item>
 										</li>
 									))}
 								</ul>
