@@ -1,17 +1,12 @@
-import { CalendarDays, Eye, EyeOff, MapPin, PlusCircle } from "lucide-react";
+import { CalendarDays, Eye, EyeOff, MapPin } from "lucide-react";
 import { redirect } from "next/navigation";
 
-import { createEvent } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/server";
 
 import { CopyLinkButton } from "./copy-link-button";
-import { EventDateTimePicker } from "./event-date-time-picker";
+import { CreateEventForm } from "./create-event-form";
 
 type EventItem = {
 	id: string;
@@ -98,53 +93,7 @@ export default async function DashboardPage() {
 					</CardHeader>
 				</Card>
 
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2 text-lg">
-							<PlusCircle className="h-5 w-5" />
-							Create New Event
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<form action={createEvent} className="grid gap-4 sm:grid-cols-2">
-							<div className="flex flex-col gap-2 sm:col-span-2">
-								<Label htmlFor="title">Title</Label>
-								<Input id="title" name="title" required placeholder="Team Offsite" />
-							</div>
-
-							<div className="flex flex-col gap-2 sm:col-span-2">
-								<Label htmlFor="description">Description</Label>
-								<Textarea
-									id="description"
-									name="description"
-									rows={4}
-									placeholder="What is this event about? (optional)"
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2 sm:col-span-2">
-								<Label htmlFor="location">Location</Label>
-								<Input id="location" name="location" placeholder="Central Park (optional)" />
-							</div>
-
-
-							<EventDateTimePicker />
-
-							<label className="inline-flex items-center gap-2 text-sm font-medium">
-								<input
-									type="checkbox"
-									name="show_attendees"
-									className="h-4 w-4 rounded border-zinc-300"
-								/>
-								Show attendees publicly
-							</label>
-
-							<div className="sm:col-span-2">
-								<Button type="submit">Create Event</Button>
-							</div>
-						</form>
-					</CardContent>
-				</Card>
+				<CreateEventForm />
 
 				<section className="grid gap-4 sm:grid-cols-2">
 					{events.length === 0 ? (
