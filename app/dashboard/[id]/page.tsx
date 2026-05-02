@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 
+import { CopyLinkButton } from "../copy-link-button";
 import { DeleteEventSection } from "./delete-event-section";
 import { EditEventForm } from "./edit-event-form";
 import { ManageAttendeesSection } from "./manage-attendees-section";
@@ -152,6 +153,9 @@ export default async function DashboardEventPage({ params }: DashboardEventPageP
               <Badge variant={eventData.show_attendees ? "secondary" : "outline"}>
                 {eventData.show_attendees ? "Attendees visible publicly" : "Attendees hidden publicly"}
               </Badge>
+            </div>
+            <div className="pt-2">
+              <CopyLinkButton eventId={eventData.id} />
             </div>
           </CardContent>
         </Card>

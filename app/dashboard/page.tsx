@@ -139,10 +139,12 @@ export default async function DashboardPage() {
 												<><EyeOff className="h-3 w-3" /> Attendees hidden</>
 											)}
 										</Badge>
-										<Button asChild size="sm" variant="secondary">
-											<Link href={`/dashboard/${event.id}`}>Manage</Link>
-										</Button>
-										<CopyLinkButton eventId={event.id} />
+										<div className="flex items-center gap-2">
+											<Button asChild size="sm" variant="secondary">
+												<Link href={`/dashboard/${event.id}`}>Manage</Link>
+											</Button>
+											<CopyLinkButton eventId={event.id} />
+										</div>
 									</CardContent>
 								</Card>
 							);

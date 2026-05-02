@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Item } from "@/components/ui/item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CopyLinkButton } from "@/app/dashboard/copy-link-button";
 import { createClient } from "@/utils/supabase/server";
 
 import { ConfirmAttendanceSection } from "./confirm-attendance-section";
@@ -131,6 +132,9 @@ export default async function EventPage({ params }: EventPageProps) {
 									: formattedDate ?? formattedTime}
 							</p>
 						)}
+						<div className="pt-2">
+							<CopyLinkButton eventId={eventData.id} />
+						</div>
 					</CardContent>
 				</Card>
 
