@@ -28,10 +28,10 @@ export function CopyLinkButton({ eventId }: CopyLinkButtonProps) {
     <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
       <Link2 className="h-4 w-4" />
       {status === "copied"
-        ? "Copied"
+        ? "Link Copied"
         : status === "failed"
           ? "Copy failed"
-          : "Copy Link"}
+          : "Share"}
     </Button>
   );
 }

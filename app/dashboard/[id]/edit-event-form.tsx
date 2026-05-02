@@ -63,7 +63,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
               <PencilLine className="h-5 w-5" />
               Edit Event
             </CardTitle>
-            <CardDescription>Update details visible on the public event page.</CardDescription>
+            <CardDescription>Update event details</CardDescription>
           </div>
           <Button
             type="button"

@@ -38,7 +38,7 @@ export function DeleteEventSection({ eventId }: DeleteEventSectionProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl text-destructive">
           <AlertTriangle className="h-5 w-5" />
-          Danger Zone
+          Delete Event
         </CardTitle>
         <CardDescription>
           This permanently deletes the event and all attendees.
@@ -57,7 +57,7 @@ export function DeleteEventSection({ eventId }: DeleteEventSectionProps) {
               disabled={isPending}
             >
               <Trash2 className="h-4 w-4" />
-              Delete event
+              Delete
             </Button>
           </div>
         ) : (
