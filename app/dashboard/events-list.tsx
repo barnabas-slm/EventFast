@@ -218,7 +218,7 @@ export function EventsList({ events }: EventsListProps) {
 						type="search"
 						value={searchQuery}
 						onChange={(event) => setSearchQuery(event.target.value)}
-						placeholder="Search by title, description, or location"
+						placeholder="Search..."
 						className="pl-10"
 					/>
 				</div>
