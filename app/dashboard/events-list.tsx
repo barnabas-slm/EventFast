@@ -75,19 +75,38 @@ function formatEventTime(timeValue: string | null) {
 	}).format(parsedDate);
 }
 
-function getEventDateSortValue(event: EventItem) {
-	if (!event.event_date) {
-		return Number.POSITIVE_INFINITY;
+function parseDateValue(dateValue: string | null) {
+	if (!dateValue) {
+		return null;
 	}
 
-	const eventTime = event.event_time ? `${event.event_time}:00` : "23:59:59";
-	const parsedDate = new Date(`${event.event_date}T${eventTime}`);
+	const parsedDate = new Date(`${dateValue}T00:00:00`);
 
 	if (Number.isNaN(parsedDate.getTime())) {
-		return Number.POSITIVE_INFINITY;
+		return null;
 	}
 
-	return parsedDate.getTime();
+	return parsedDate;
+}
+
+function parseTimeValue(timeValue: string | null) {
+	if (!timeValue) {
+		return null;
+	}
+
+	const [hoursText, minutesText] = timeValue.split(":");
+	const hours = Number.parseInt(hoursText ?? "", 10);
+	const minutes = Number.parseInt(minutesText ?? "", 10);
+
+	if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+		return null;
+	}
+
+	if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+		return null;
+	}
+
+	return (hours * 60 + minutes) * 60;
 }
 
 function getCreationDateSortValue(event: EventItem) {
@@ -98,6 +117,54 @@ function getCreationDateSortValue(event: EventItem) {
 	}
 
 	return parsedDate.getTime();
+}
+
+function compareByEventDateNewestFirst(left: EventItem, right: EventItem) {
+	const leftDate = parseDateValue(left.event_date);
+	const rightDate = parseDateValue(right.event_date);
+	const leftTime = parseTimeValue(left.event_time);
+	const rightTime = parseTimeValue(right.event_time);
+
+	const leftHasDate = leftDate !== null;
+	const rightHasDate = rightDate !== null;
+
+	if (leftHasDate && rightHasDate) {
+		const dayDelta = rightDate.getTime() - leftDate.getTime();
+
+		if (dayDelta !== 0) {
+			return dayDelta;
+		}
+
+		const leftHasTime = leftTime !== null;
+		const rightHasTime = rightTime !== null;
+
+		if (leftHasTime && rightHasTime) {
+			return rightTime - leftTime;
+		}
+
+		if (leftHasTime !== rightHasTime) {
+			return leftHasTime ? -1 : 1;
+		}
+
+		return getCreationDateSortValue(right) - getCreationDateSortValue(left);
+	}
+
+	if (leftHasDate !== rightHasDate) {
+		return leftHasDate ? -1 : 1;
+	}
+
+	const leftHasTime = leftTime !== null;
+	const rightHasTime = rightTime !== null;
+
+	if (leftHasTime && rightHasTime) {
+		return rightTime - leftTime;
+	}
+
+	if (leftHasTime !== rightHasTime) {
+		return leftHasTime ? -1 : 1;
+	}
+
+	return getCreationDateSortValue(right) - getCreationDateSortValue(left);
 }
 
 function matchesSearch(event: EventItem, normalizedQuery: string) {
@@ -118,7 +185,7 @@ function sortEvents(events: EventItem[], sortOption: SortOption) {
 		return sortedEvents;
 	}
 
-	sortedEvents.sort((left, right) => getEventDateSortValue(left) - getEventDateSortValue(right));
+	sortedEvents.sort(compareByEventDateNewestFirst);
 	return sortedEvents;
 }
 
