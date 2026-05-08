@@ -93,6 +93,7 @@ export function EventDateTimePicker({
   const [hour, setHour] = useState(parsedInitialTime?.hour ?? "");
   const [minute, setMinute] = useState(parsedInitialTime?.minute ?? "");
   const [period, setPeriod] = useState<"AM" | "PM" | "">(parsedInitialTime?.period ?? "");
+  const hasAnyTimePart = hour.length > 0 || minute.length > 0 || period.length > 0;
 
   const time = hour && minute && period ? build24HourTime(hour, minute, period) : "";
 
@@ -129,12 +130,12 @@ export function EventDateTimePicker({
 
       <div className="flex flex-col gap-2">
         <Label>Time</Label>
-        <div className="grid grid-cols-3 gap-2">
-          <Select value={hour} onValueChange={setHour}>
-            <SelectTrigger aria-label="Hour">
-              <SelectValue placeholder="Hour" />
+        <div className="flex gap-2">
+          <Select value={hour} onValueChange={setHour} required={hasAnyTimePart}>
+            <SelectTrigger aria-label="Hour" className="w-16">
+              <SelectValue placeholder="--"/>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper" className="max-h-60">
               {HOUR_OPTIONS.map((hourOption) => (
                 <SelectItem key={hourOption} value={hourOption}>
                   {hourOption}
@@ -143,11 +144,11 @@ export function EventDateTimePicker({
             </SelectContent>
           </Select>
 
-          <Select value={minute} onValueChange={setMinute}>
-            <SelectTrigger aria-label="Minute">
-              <SelectValue placeholder="Minute" />
+          <Select value={minute} onValueChange={setMinute} required={hasAnyTimePart}>
+            <SelectTrigger aria-label="Minute" className="w-20">
+              <SelectValue placeholder="--"/>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper" className="max-h-60">
               {MINUTE_OPTIONS.map((minuteOption) => (
                 <SelectItem key={minuteOption} value={minuteOption}>
                   {minuteOption}
@@ -156,9 +157,9 @@ export function EventDateTimePicker({
             </SelectContent>
           </Select>
 
-          <Select value={period} onValueChange={(value) => setPeriod(value as "AM" | "PM") }>
-            <SelectTrigger aria-label="AM or PM">
-              <SelectValue placeholder="AM/PM" />
+          <Select value={period} onValueChange={(value) => setPeriod(value as "AM" | "PM") } required={hasAnyTimePart}>
+            <SelectTrigger aria-label="AM or PM" className="w-20">
+              <SelectValue placeholder="--"/>
             </SelectTrigger>
             <SelectContent>
               {PERIOD_OPTIONS.map((periodOption) => (
